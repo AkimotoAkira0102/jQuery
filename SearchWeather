@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Weather</title>
+		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	</head>
+	<body>
+		<input id="city" type="text" placeholder="在此輸入查詢縣市">
+		<button id="search">查詢</button><br>
+		<strong id="Wx"></strong>
+		<p id="Wx_content"></p>
+		<strong id="Pop"></strong>
+		<p id="Pop_content"></p>
+		<strong id="Temperate"></strong>
+		<p id="Temperate_content"></p>
+		<strong id="CI"></strong>
+		<p id="CI_content"></p>
+	</body>
+	<script type="text/javascript">	
+		$(document).ready(function(){
+		});
+		
+		$('#search').click(function(){
+			callWeatherAPI($('#city').val())
+		});
+		
+		callWeatherAPI = function (city){
+			$.ajax({
+				url: 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001',
+				type: 'GET',
+				data: {
+					Authorization: "XXXX",		//API認證
+					locationName: city
+				},
+				error: function(xhr) {
+					alert('Ajax request 失敗');
+				},
+				success: function(response) {
+					//alert('Ajax request 成功');
+					console.log(response.records);
+					console.log(response.records.location[0].locationName);
+					
+					console.log('天氣現象');
+					$('#Wx').text('天氣現象');
+					var Wx = "";		//天氣現象
+					for(var i=0;i<3;i++){
+						Wx += response.records.location[0].weatherElement[0].time[i].startTime + ' ~ ' + response.records.location[0].weatherElement[0].time[i].endTime + ' ' + response.records.location[0].weatherElement[0].time[i].parameter.parameterName + '<br>';
+						console.log(Wx);
+					}
+					$('#Wx_content').html(Wx);
+					
+					console.log('降雨機率');
+					$('#Pop').text('降雨機率');
+					var Pop = "";	//降雨機率
+					for(var i=0;i<3;i++){
+						Pop += response.records.location[0].weatherElement[1].time[i].startTime + ' ~ ' + response.records.location[0].weatherElement[1].time[i].endTime + ' ' + response.records.location[0].weatherElement[1].time[i].parameter.parameterName + '%' + '<br>';
+						console.log(Pop);
+						$('#Pop_content').html(Pop);
+					}
+					
+					console.log('溫度');
+					$('#Temperate').text('溫度');
+					var Temperate = "";	//溫度
+					for(var i=0;i<3;i++){
+						Temperate += response.records.location[0].weatherElement[2].time[i].startTime + ' ~ ' + response.records.location[0].weatherElement[2].time[i].endTime + ' ' + response.records.location[0].weatherElement[2].time[i].parameter.parameterName + '℃ ~ ' + response.records.location[0].weatherElement[4].time[i].parameter.parameterName + '℃<br>';
+						console.log(Temperate);
+						$('#Temperate_content').html(Temperate);
+					}
+					
+					console.log('舒適度');
+					$('#CI').text('舒適度');
+					var CI = "";	//舒適度
+					for(var i=0;i<3;i++){
+						CI += response.records.location[0].weatherElement[3].time[i].startTime + ' ~ ' + response.records.location[0].weatherElement[3].time[i].endTime + ' ' + response.records.location[0].weatherElement[3].time[i].parameter.parameterName + '<br>';
+						console.log(CI);
+						$('#CI_content').html(CI);
+					}
+				}
+			});
+		};
+	</script>
+</html>
