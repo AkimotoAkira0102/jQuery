@@ -22,7 +22,7 @@
 		
 		<table align="center" border = '1' id = "AQI"></table>
 		
-		<div id="DetailAQI" title="Basic dialog"></div>
+		<div id="DetailAQI"></div>
 	</body>
 	<footer style = "background-color:black">
 		<p align="center" style="font-size:40%; color:white" >作者:陳柏銓</p>
@@ -90,10 +90,11 @@
 	});
 	
 	function ShowAQI(sitename){
+		$("#DetailAQI p").remove();
+		$("#DetailAQI br").remove();
 		$("#DetailAQI").dialog("open");
 		$.each(JsonData,function(index,value){
 			if(this.SiteName.toString() == sitename){
-				console.log();
 				$(".ui-dialog-title").html(this.County + '-' + this.SiteName);
 				$("#DetailAQI").append(`<p>CO:${this.CO}</p></br>
 										<p>SO2:${this.SO2}</p></br>`)
